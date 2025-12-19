@@ -1,6 +1,6 @@
 # Ignore large binary data files
 *.mat
-*.h5
+#*.h5
 *.npz
 
 # Keep the example directory clean but allow the specific sample

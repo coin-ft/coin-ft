@@ -43,5 +43,5 @@ def visualize_h5_data(file_path):
 
 # --- RUN IT ---
 # Replace with your actual filename
-filename = 'CFT24_calibrationData_20251219_103919_train.h5' 
+filename = 'data/CFT24_calibrationData_20251219_111755_train.h5' 
 visualize_h5_data(filename)
