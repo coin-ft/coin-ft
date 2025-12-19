@@ -1,0 +1,13 @@
+# Ignore large binary data files
+*.mat
+*.h5
+*.npz
+
+# Keep the example directory clean but allow the specific sample
+!example_data/sample_calibration.h5
+
+# Python environment and cache
+__pycache__/
+.venv/
+env/
+.vscode/
