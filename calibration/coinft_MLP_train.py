@@ -16,20 +16,22 @@ L2_REG = 1e-4  # L2 Regularization
 SEED = 42
 SENSOR_NAME = "CFT24"
 MODEL_NAME = f"{SENSOR_NAME}_MLP"
-DATA_DIR = os.path.join('.', 'data')  # Folder containing .h5 files
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(SCRIPT_DIR, '..', 'data')
 
 # Check for GPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
-# Set random seed for reproducibility (MATLAB: rng(42))
+# Set random seed for reproducibility 
 torch.manual_seed(SEED)
 np.random.seed(SEED)
 
 # --- 1. DATASET CLASS ---
 class CoinFTDataset(Dataset):
     def __init__(self, h5_path):
-        # Load data into memory (fastest for this dataset size)
+        # Load data into memory 
         with h5py.File(h5_path, 'r') as f:
             self.X = torch.tensor(f['data'][:], dtype=torch.float32)
             self.Y = torch.tensor(f['label'][:], dtype=torch.float32)
@@ -41,12 +43,10 @@ class CoinFTDataset(Dataset):
         return self.X[idx], self.Y[idx]
 
 # --- 2. NETWORK ARCHITECTURE ---
-# Matches your MATLAB layers: 128 -> 64 -> 36 -> 24 -> 12 -> 6
 class CoinFTNet(nn.Module):
     def __init__(self, input_dim, output_dim):
         super(CoinFTNet, self).__init__()
         self.net = nn.Sequential(
-            # Input Layer is implicit in PyTorch
             
             # Layer 1: 128
             nn.Linear(input_dim, 128),
@@ -88,7 +88,7 @@ def train_pipeline():
     test_loader  = DataLoader(test_dataset, batch_size=len(test_dataset), shuffle=False)
 
     # Determine dimensions dynamically
-    input_dim = train_dataset.X.shape[1]  # Should be 8 based on your data
+    input_dim = train_dataset.X.shape[1]  # Should be 12 based on CoinFT raw data
     output_dim = train_dataset.Y.shape[1] # Should be 6 (Fx...Mz)
     print(f"Input Dim: {input_dim}, Output Dim: {output_dim}")
 
@@ -142,14 +142,20 @@ def train_pipeline():
     print("Training complete.")
 
     # --- 6. SAVE MODEL (PyTorch & ONNX) ---
+
+    # --- 6. SAVE MODEL (PyTorch & ONNX) ---
+    pth_path = os.path.join(DATA_DIR, f"{MODEL_NAME}.pth")
+    onnx_path = os.path.join(DATA_DIR, f"{MODEL_NAME}.onnx")
+
     # Save standard PyTorch model
-    torch.save(model.state_dict(), f"{MODEL_NAME}.pth")
+    torch.save(model.state_dict(), pth_path)
     
-    # Export to ONNX (Important for deployment/compatibility)
+    # Export to ONNX
     dummy_input = torch.randn(1, input_dim).to(device)
-    torch.onnx.export(model, dummy_input, f"{MODEL_NAME}.onnx", 
+    torch.onnx.export(model, dummy_input, onnx_path, 
                       input_names=['input'], output_names=['output'])
-    print(f"Model saved as {MODEL_NAME}.pth and {MODEL_NAME}.onnx")
+    
+    print(f"Models saved to:\n  {pth_path}\n  {onnx_path}")
 
     # --- 7. EVALUATION & DENORMALIZATION ---
     print("\nEvaluating on Test Set...")
@@ -183,7 +189,6 @@ def train_pipeline():
         print(f"  {label} : {mse_per_dim[i]:.6f}")
 
     # --- 8. VISUAL CHECK (Matplotlib) ---
-    # Plotting first 100 samples to keep plot clean, or all if preferred
     plot_len = len(Y_test_real)
     
     fig, axs = plt.subplots(3, 2, figsize=(10, 10))
@@ -196,7 +201,9 @@ def train_pipeline():
         if i == 0: axs[i].legend()
         
     plt.tight_layout()
-    plt.savefig(f"{MODEL_NAME}_results.png")
+
+    fig_path = os.path.join(DATA_DIR, f"{MODEL_NAME}_results.png")
+    plt.savefig(fig_path)
     plt.show()
 
 if __name__ == "__main__":
