@@ -7,16 +7,8 @@
 # 1. Ignore EVERYTHING inside the data folder by default
 data/*
 
-# 2. Exception: Allow the processed datasets
-!data/train.h5
-!data/val.h5
-!data/test.h5
 
-# 3. Exception: Allow the model files and results
-!data/CFT24_MLP.onnx
-!data/CFT24_MLP.pth
-!data/CFT24_MLP_results.png
-!data/*_norm.json
+
 
 # Python environment and cache
 __pycache__/
