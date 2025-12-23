@@ -3,7 +3,7 @@
 // ==========================================
 // USER CONFIGURATION
 // ==========================================
-#define NUM_COINFTS  2   // Currently supports 1 or 2. You can easily extend to more CoinFTs.
+#define NUM_COINFTS  2   // Currently supports 1 or 2. You can easily extend to more CoinFTs by modifying the code.
 // ==========================================
 
 // Use built-in IntervalTimer for Teensy 4.0
