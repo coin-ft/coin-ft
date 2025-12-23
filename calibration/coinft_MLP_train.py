@@ -19,6 +19,7 @@ MODEL_NAME = f"{SENSOR_NAME}_MLP"
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(SCRIPT_DIR, '..', 'data')
+CONFIG_DIR = os.path.join(SCRIPT_DIR, '..', 'hardware_configs')
 
 # Check for GPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -142,10 +143,8 @@ def train_pipeline():
     print("Training complete.")
 
     # --- 6. SAVE MODEL (PyTorch & ONNX) ---
-
-    # --- 6. SAVE MODEL (PyTorch & ONNX) ---
-    pth_path = os.path.join(DATA_DIR, f"{MODEL_NAME}.pth")
-    onnx_path = os.path.join(DATA_DIR, f"{MODEL_NAME}.onnx")
+    pth_path = os.path.join(CONFIG_DIR, f"{MODEL_NAME}.pth")
+    onnx_path = os.path.join(CONFIG_DIR, f"{MODEL_NAME}.onnx")
 
     # Save standard PyTorch model
     torch.save(model.state_dict(), pth_path)
@@ -161,7 +160,7 @@ def train_pipeline():
     print("\nEvaluating on Test Set...")
     
     # Load Normalization Constants
-    with open(os.path.join(DATA_DIR, f'{SENSOR_NAME}_norm.json'), 'r') as f:
+    with open(os.path.join(CONFIG_DIR, f'{SENSOR_NAME}_norm.json'), 'r') as f:
         norm = json.load(f)
         mu_y = np.array(norm['mu_y'])
         sd_y = np.array(norm['sd_y'])

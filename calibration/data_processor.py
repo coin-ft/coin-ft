@@ -10,14 +10,18 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 # Path to raw data (relative to this script)
 DATA_DIR = os.path.join(SCRIPT_DIR, '..', 'data')
 # Path to save processed data
-SAVE_DIR = os.path.join(SCRIPT_DIR, '..', 'data')
+SAVE_DATA_DIR = os.path.join(SCRIPT_DIR, '..', 'data')
+SAVE_JSON_DIR = os.path.join(SCRIPT_DIR, '..', 'hardware_configs')
 JSON_FILENAME = f'{SENSOR_NAME}_norm.json'  # Name of your JSON constants file
 
 def process_data():
     # 1. Setup Directories
-    if not os.path.exists(SAVE_DIR):
-        os.makedirs(SAVE_DIR)
-        print(f"Created directory: {SAVE_DIR}")
+    if not os.path.exists(SAVE_DATA_DIR):
+        os.makedirs(SAVE_DATA_DIR)
+        print(f"Created directory: {SAVE_DATA_DIR}")
+    if not os.path.exists(SAVE_JSON_DIR):
+        os.makedirs(SAVE_JSON_DIR)
+        print(f"Created directory: {SAVE_JSON_DIR}")
 
     # 2. Find all HDF5 files matching the sensor name
     search_path = os.path.join(DATA_DIR, f"*{SENSOR_NAME}_calibrationData_*.h5")
@@ -115,7 +119,7 @@ def process_data():
         "sd_y": std_Y.tolist()
     }
 
-    json_path = os.path.join(SAVE_DIR, JSON_FILENAME)
+    json_path = os.path.join(SAVE_JSON_DIR, JSON_FILENAME)
 
     with open(json_path, 'w') as json_file:
         json.dump(norm_constants, json_file, indent=2)
@@ -141,7 +145,7 @@ def process_data():
     def save_h5(filename, x_data, y_data):
         if x_data is None: return
         
-        full_path = os.path.join(SAVE_DIR, filename)
+        full_path = os.path.join(SAVE_DATA_DIR, filename)
         with h5py.File(full_path, 'w') as f:
             f.create_dataset('data', data=x_data, compression='gzip')
             f.create_dataset('label', data=y_data, compression='gzip')
