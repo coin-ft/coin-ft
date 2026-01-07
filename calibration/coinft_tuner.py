@@ -10,6 +10,7 @@ import time
 from collections import deque
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+import os
 
 class CoinFTTuner:
     def __init__(self, root):
@@ -46,9 +47,15 @@ class CoinFTTuner:
         self.btn_refresh.pack(side="left", padx=5)
 
         ttk.Label(control_frame, text="Tuning File (.mat):").pack(side="left", padx=5)
-        self.entry_tuning_file = ttk.Entry(control_frame, width=20)
+        self.entry_tuning_file = ttk.Entry(control_frame, width=50) # Increased width for path
         self.entry_tuning_file.pack(side="left", padx=5)
-        self.entry_tuning_file.insert(0, "Tuning_saved.mat") # Default
+        
+        # Calculate path: active_script_dir/../hardware_configs
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        self.config_dir = os.path.abspath(os.path.join(base_dir, "..", "hardware_configs"))
+        default_path = os.path.join(self.config_dir, "Tuning_saved.mat")
+        
+        self.entry_tuning_file.insert(0, default_path)
         
         self.btn_start = ttk.Button(control_frame, text="Start", command=self.start_system)
         self.btn_start.pack(side="left", padx=5)
@@ -328,11 +335,15 @@ class CoinFTTuner:
         """Saves current parameters to MAT and TXT."""
         if self.tuning_params is None: return
         
+        # Construct absolute paths
+        mat_path = os.path.join(self.config_dir, 'Tuning_saved.mat')
+        txt_path = os.path.join(self.config_dir, 'Tuning_saved.txt')
+
         # 1. Save MAT
-        scipy.io.savemat('Tuning_saved.mat', {'TuningParams': self.tuning_params})
+        scipy.io.savemat(mat_path, {'TuningParams': self.tuning_params})
         
         # 2. Save TXT (C Struct style)
-        with open('Tuning_saved.txt', 'w') as f:
+        with open(txt_path, 'w') as f:
             f.write('const uint8 Params_All[{}][3] = {{\n'.format(self.num_sensors))
             for i in range(self.num_sensors):
                 row = self.tuning_params[i]
