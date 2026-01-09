@@ -1,5 +1,4 @@
 # Ignore large binary data files
-*.mat
 #*.h5
 *.npz
 

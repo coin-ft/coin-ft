@@ -290,10 +290,31 @@ class CoinFTTuner:
             
             # Plot only active channels
             if self.active_channels:
-                lines = self.ax.plot(data_arr[:, self.active_channels])
+                # Slice the array to get only the data we are actually plotting
+                active_data = data_arr[:, self.active_channels]
+                
+                lines = self.ax.plot(active_data)
                 self.ax.legend(lines, [f"Sn {i}" for i in self.active_channels], loc='upper left')
+                
+                # --- Dynamic Y-Axis Logic ---
+                if active_data.size > 0:
+                    # Calculate min/max of ONLY the currently visible data
+                    current_min = np.min(active_data)
+                    current_max = np.max(active_data)
+                    
+                    # Apply the user-requested buffer
+                    # You can add max(0, ...) here if you never want it to go negative
+                    y_min = current_min - 50
+                    y_max = current_max + 50
+                    
+                    # Safety check: if signal is perfectly flat, give it a small range
+                    if y_min == y_max:
+                        y_min -= 10
+                        y_max += 10
+                        
+                    self.ax.set_ylim(y_min, y_max)
+                # -----------------------------
             
-            self.ax.set_ylim(0, 65535) # Fixed range or dynamic
             self.ax.grid(True)
             self.canvas.draw()
 
