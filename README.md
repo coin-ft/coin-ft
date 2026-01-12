@@ -10,11 +10,13 @@ We provide Conda environment files to ensure all dependencies are installed with
 ```bash
 conda env create -f environment_win.yml
 conda activate coin-ft
+```
 
 **Create the environment (UNIX - Linux/macOS):**
 ```bash
 conda env create -f environment_unix.yml
 conda activate coin-ft
+```
 
 
 ### 🔩 Hardware Instructions
