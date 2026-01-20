@@ -21,5 +21,5 @@ conda activate coin-ft
 
 ### 🔩 Hardware Instructions
 
-All the details on preparing the hardware and using the code in this repo can be found in the [hardware instructions](https://docs.google.com/presentation/d/e/2PACX-1vRybvSuFripPmXW7VXZmN60vpjBw-rlWZ6jQqhkya9pGpOYKrB4HXZTTUl1LOxrdDRbipdu4E1uCyrY/pub?start=false&loop=false&delayms=3000)
+All the details on preparing the hardware and using the code in this repo can be found in the [hardware instructions]([https://docs.google.com/presentation/d/e/2PACX-1vRybvSuFripPmXW7VXZmN60vpjBw-rlWZ6jQqhkya9pGpOYKrB4HXZTTUl1LOxrdDRbipdu4E1uCyrY/pub?start=false&loop=false&delayms=3000](https://docs.google.com/document/d/e/2PACX-1vSQ-6q2MDwoBn2g9_u95RpvHrBDzH095R--uHuNxioFIZdZOnJKnvnTMS7yw188D1-z9awBrU9pWYNI/pub))
 
